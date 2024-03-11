@@ -54,17 +54,24 @@ class ProjectsTest extends TestCase
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
     }
 
-    public function test_a_user_can_view_a_project()
+    public function test_a_user_can_view_their_project()
     {
         $this->be(User::factory()->create()); 
-
-        $this->withoutExceptionHandling();
         
         $project = ProjectFactory::new()->create(['owner_id' => Auth::id()]);
 
         $this->get($project->path())
         ->assertSee($project->title)
         ->assertSee($project->description);
+    }
+
+    public function test_an_authenticated_user_cannot_view_the_projects_of_others()
+    {
+        $this->be(User::factory()->create()); 
+        
+        $project = ProjectFactory::new()->create();
+
+        $this->get($project->path())->assertSee(403);
     }
 
     public function test_no_projects_in_database()

@@ -41,10 +41,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        // if (Auth::id() !== $project->owner_id) {
-        //     abort(403, 'You are not authorized to view this project.');
-        // };
-
+        if (Auth::id() !== $project->owner_id) {
+            abort(403, 'You are not authorized to view this project.');
+        };
+        
         return view('projects.show', compact('project'));
 
     }
