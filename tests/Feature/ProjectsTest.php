@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Database\Factories\ProjectFactory;
 
 class ProjectsTest extends TestCase
 {
@@ -42,5 +43,16 @@ class ProjectsTest extends TestCase
         ];
 
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
+    }
+
+    public function test_a_user_can_view_a_project()
+    {
+        $this->withoutExceptionHandling();
+        
+        $project = ProjectFactory::new()->create();
+
+        $this->get($project->path())
+        ->assertSee($project->title)
+        ->assertSee($project->description);
     }
 }
