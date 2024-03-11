@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Database\Factories\ProjectFactory;
+use App\Models\Project;
 
 class ProjectsTest extends TestCase
 {
@@ -54,5 +55,14 @@ class ProjectsTest extends TestCase
         $this->get($project->path())
         ->assertSee($project->title)
         ->assertSee($project->description);
+    }
+
+    public function test_no_projects_in_database()
+    {
+        Project::truncate();
+
+        $this->assertDatabaseCount('projects', 0);
+
+        $this->get('/projects')->assertSee('No projects in database');
     }
 }
