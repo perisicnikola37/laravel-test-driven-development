@@ -5,3 +5,15 @@
 * {
     text-decoration: none !important;
 }
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6366f1;
+}

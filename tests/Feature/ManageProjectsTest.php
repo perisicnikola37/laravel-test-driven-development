@@ -36,7 +36,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_requires_a_title()
     {
-        $this->actingAs(User::factory()->create());
+        $this->signIn();
 
         $attributes = [
             'description' => $this->faker->paragraph,
@@ -47,7 +47,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_requires_a_description()
     {
-        $this->actingAs(User::factory()->create());
+        $this->signIn();
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -58,7 +58,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_user_can_view_their_project()
     {
-        $this->be(User::factory()->create()); 
+        $this->signIn();
         
         $project = ProjectFactory::new()->create(['owner_id' => Auth::id()]);
 
@@ -69,7 +69,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_an_authenticated_user_cannot_view_the_projects_of_others()
     {
-        $this->be(User::factory()->create()); 
+        $this->signIn();
         
         $project = ProjectFactory::new()->create();
 

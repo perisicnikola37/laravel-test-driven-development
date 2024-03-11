@@ -2,37 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 
-class ProjectController extends Controller
+class ProjectTaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-      $projects = Auth::user()->projects()->latest()->get();
-
-        return view('projects.index', compact('projects'));
+        //
     }
-
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('projects.create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
-        $project = Auth::user()->projects()->create(request()->validate(['title' => 'required','description' => 'required']));
+        if(Auth::id() !== ($project->owner_id)) {
+            abort(403);
+        }
+        
+        request()->validate(['body' => 'required']);
+
+        $project->addTask(request('body'));
 
         return redirect($project->path());
     }
@@ -40,14 +43,9 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(string $id)
     {
-        if (Auth::id() !== $project->owner_id) {
-            abort(403, 'You are not authorized to view this project.');
-        };
-        
-        return view('projects.show', compact('project'));
-
+        //
     }
 
     /**

@@ -19,6 +19,7 @@
                 <main class="relative min-h-screen bg-[#F4F4F8] overflow-hidden">
                     @yield('content')
                 </main>
+                @include('layouts.components.footer')
             </div>
         </h1>
     </div>
