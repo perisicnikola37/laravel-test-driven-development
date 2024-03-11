@@ -14,7 +14,12 @@
 <body>
     <div>
         <h1 class="text-3xl font-bold underline">
-            @yield('content')
+            @include('layouts.components.header')
+            <div class="relative font-inter antialiased">
+                <main class="relative min-h-screen bg-[#F4F4F8] overflow-hidden">
+                    @yield('content')
+                </main>
+            </div>
         </h1>
     </div>
 </body>
