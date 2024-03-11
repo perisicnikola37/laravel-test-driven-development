@@ -13,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Auth::user()->projects;
 
         return view('projects.index', compact('projects'));
     }
@@ -41,6 +41,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        // if (Auth::id() !== $project->owner_id) {
+        //     abort(403, 'You are not authorized to view this project.');
+        // };
+
         return view('projects.show', compact('project'));
 
     }

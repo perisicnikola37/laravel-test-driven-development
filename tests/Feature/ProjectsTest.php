@@ -10,6 +10,7 @@ use App\Models\ {
     Project,
     User
 };
+use Illuminate\Support\Facades\Auth;
 
 class ProjectsTest extends TestCase
 {
@@ -55,9 +56,11 @@ class ProjectsTest extends TestCase
 
     public function test_a_user_can_view_a_project()
     {
+        $this->be(User::factory()->create()); 
+
         $this->withoutExceptionHandling();
         
-        $project = ProjectFactory::new()->create();
+        $project = ProjectFactory::new()->create(['owner_id' => Auth::id()]);
 
         $this->get($project->path())
         ->assertSee($project->title)
@@ -70,12 +73,22 @@ class ProjectsTest extends TestCase
 
         $this->assertDatabaseCount('projects', 0);
 
-        $this->get('/projects')->assertSee('No projects in database');
+        $this->get('/projects')->assertRedirect('login');
     }
 
     public function test_only_authenticated_users_can_create_projects() {
         $attributes = ProjectFactory::new()->raw(['owner_id' => null]);
 
         $this->post('/projects', array_merge($attributes))->assertRedirect('login');
+    }
+    
+    public function test_guests_may_not_view_projects() {
+        $this->get('/projects')->assertRedirect('login');
+    }
+
+    public function test_guests_cannot_view_a_single_project() {
+        $project = ProjectFactory::new()->create();
+
+        $this->get($project->path())->assertRedirect('login');
     }
 }
