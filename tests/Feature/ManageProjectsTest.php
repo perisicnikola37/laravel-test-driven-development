@@ -12,16 +12,18 @@ use App\Models\ {
 };
 use Illuminate\Support\Facades\Auth;
 
-class ProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_a_user_can_create_a_project()
+    public function test_guests_cannot_create_projects()
     {
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create(); 
         $this->actingAs($user); 
+
+        $this->get('/projects/create')->assertStatus(200);
 
         $attributes = Project::factory()->raw(['owner_id' => $user->id]); 
 
@@ -89,7 +91,7 @@ class ProjectsTest extends TestCase
         $this->post('/projects', array_merge($attributes))->assertRedirect('login');
     }
     
-    public function test_guests_may_not_view_projects() {
+    public function test_guests_cannot_view_projects() {
         $this->get('/projects')->assertRedirect('login');
     }
 

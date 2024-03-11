@@ -13,17 +13,18 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Auth::user()->projects;
+      $projects = Auth::user()->projects()->latest()->get();
 
         return view('projects.index', compact('projects'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('projects.create');
     }
 
     /**

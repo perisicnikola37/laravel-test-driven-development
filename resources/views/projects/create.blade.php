@@ -6,40 +6,49 @@
     <div class="relative font-inter antialiased">
         <main class="relative min-h-screen bg-slate-900 overflow-hidden">
             <div class="container mx-auto px-4 md:px-6 py-24">
-                <!-- Card grid -->
-                <h1>
-                    <div>
-                        <button
-                            class="bg-transparent hover:bg-blue-500 text-base text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded duration-300 mb-10">
-                            <a href={{ route('projects.create') }}>Create</a>
-                        </button>
-                    </div>
-                </h1>
-                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @forelse ($projects as $key => $project)
-                        <div class="bg-white rounded-lg shadow-md hover:scale-105 duration-300 hover:cursor-pointer">
-                            <img class="w-full h-44 object-cover rounded-t-lg"
-                                src="https://cdn.hdwebsoft.com/wp-content/uploads/2021/11/Thiet-ke-chua-co-ten-4.jpg.webp"
-                                alt="{{ $project['title'] }}">
-                            <div class="p-6">
-                                <h1 class="text-xl font-bold text-slate-900">{{ $project['title'] }}</h1>
-                                <p class="text-sm text-slate-500 mt-2">{{ $project['description'] }}</p>
-                                <p class="text-sm text-slate-500 mt-2">{{ $project['additional_info'] }}</p>
-                                <a class="block text-sm font-medium text-indigo-500 hover:underline mt-4"
-                                    href="{{ $project['link'] }}">Read more -></a>
+                <form action={{ route('projects.store') }} method="POST">
+                    @csrf
+
+                    <div class="max-w-3xl mx-auto">
+                        <h1 class="text-4xl font-bold text-white mb-6">Create a new project</h1>
+                        <div class="bg-slate-800 rounded-lg p-6">
+                            <div class="mb-4">
+                                <label for="title" class="block text-sm font-medium text-slate-300">Title</label>
+                                <input type="text" name="title" id="title"
+                                    class="mt-1 block w-full rounded-md bg-slate-700 border-transparent focus:border-slate-500 focus:bg-slate-800 focus:ring-0 text-white text-sm"
+                                    required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="description"
+                                    class="block text-sm font-medium text-slate-300">Description</label>
+                                <textarea rows=10 name="description" id="description"
+                                    class="mt-1 block w-full rounded-md bg-slate-700 border-transparent focus:border-slate-500 focus:bg-slate-800 focus:ring-0 text-white text-sm"
+                                    required></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button
+                                    class="bg-transparent hover:bg-blue-500 text-base text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded duration-300 mb-10">
+                                    Submit
+                                </button>
                             </div>
                         </div>
-                    @empty
-                        <div class="text-center text-white">No projects in database</div>
-                    @endforelse
-                </section>
-                <!-- End: Card grid -->
+                        <div class="mt-6">
+                            <a href="/projects" class="text-indigo-500 hover:underline text-sm flex items-center">
+                                <svg class="fill-indigo-400 mr-1" xmlns="http://www.w3.org/2000/svg" width="9"
+                                    height="9">
+                                    <path
+                                        d="m1.649 8.514-.91-.915 5.514-5.523H2.027l.01-1.258h6.388v6.394H7.158l.01-4.226z" />
+                                </svg>
+                                <span>Go back</span>
+                            </a>
+                </form>
             </div>
         </main>
         <!-- Page footer -->
         <footer class="absolute left-6 right-6 md:left-12 md:right-auto bottom-4 md:bottom-8 text-center md:text-left">
             <a class="text-xs text-slate-500 hover:underline" href="https://github.com/perisicnikola37"
-                target="_blank">&copy; -
+                target="_blank">&copy;
+                -
                 @perisicnikola37 /
                 GitHub</a>
         </footer>
