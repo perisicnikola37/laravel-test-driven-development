@@ -1,6 +1,6 @@
 @extends('layouts.main.app')
 
-@section('title', 'Page Title')
+@section('title', 'Test driven development in Laravel | @perisicnikola37')
 
 @section('content')
     <div class="relative font-inter antialiased">
@@ -30,8 +30,10 @@
         </main>
         <!-- Page footer -->
         <footer class="absolute left-6 right-6 md:left-12 md:right-auto bottom-4 md:bottom-8 text-center md:text-left">
-            <a class="text-xs text-slate-500 hover:underline" href="https://cruip.com">&copy;Cruip - Tailwind CSS
-                templates</a>
+            <a class="text-xs text-slate-500 hover:underline" href="https://github.com/perisicnikola37"
+                target="_blank">&copy; -
+                @perisicnikola37 /
+                GitHub</a>
         </footer>
         <!-- Banner with links -->
         <div class="fixed bottom-0 right-0 w-full md:bottom-6 md:right-12 md:w-auto z-50"
@@ -40,13 +42,13 @@
                 <div class="text-slate-500 inline-flex">
                     <a class="font-medium hover:underline text-slate-300"
                         href="https://cruip.com/creating-a-css-only-card-slider-with-tailwind-css/" target="_blank">
-                        Read Tutorial
+                        Read more
                     </a>
-                    <span class="italic px-1.5">or</span>
+                    <span class="italic px-1.5">or visit</span>
                     <a class="font-medium hover:underline text-indigo-500 flex items-center"
-                        href="https://github.com/cruip/cruip-tutorials/blob/main/card-slider/index.html" target="_blank"
+                        href="https://github.com/perisicnikola37/laravel-test-driven-development" target="_blank"
                         rel="noreferrer">
-                        <span>Download</span>
+                        <span>Repository</span>
                         <svg class="fill-indigo-400 ml-1" xmlns="http://www.w3.org/2000/svg" width="9" height="9">
                             <path d="m1.649 8.514-.91-.915 5.514-5.523H2.027l.01-1.258h6.388v6.394H7.158l.01-4.226z" />
                         </svg>

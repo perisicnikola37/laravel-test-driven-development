@@ -12,14 +12,11 @@ class ProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_a_user_can_create_a_project(): void
+    public function test_a_user_can_create_a_project()
     {
         $this->withoutExceptionHandling();
 
-        $attributes = [
-            'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph,
-        ];
+        $attributes = Project::factory()->raw();
 
         $this->post('/projects', $attributes)->assertRedirect('/projects');
 
@@ -64,5 +61,11 @@ class ProjectsTest extends TestCase
         $this->assertDatabaseCount('projects', 0);
 
         $this->get('/projects')->assertSee('No projects in database');
+    }
+
+    public function test_a_project_requies_an_owner() {
+        $attributes = ProjectFactory::new()->raw(['owner_id' => null]);
+
+        $this->post('/projects', $attributes)->assertSessionHasErrors('owner_id');
     }
 }

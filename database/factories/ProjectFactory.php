@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Project;
+use App\Models\ {
+    User,
+    Project
+};
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -27,6 +30,9 @@ class ProjectFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
+            'owner_id' => function() {
+                return User::factory()->create()->id;
+            }
         ];
     }
 }
