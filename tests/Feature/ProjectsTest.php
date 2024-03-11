@@ -6,7 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Database\Factories\ProjectFactory;
-use App\Models\Project;
+use App\Models\ {
+    Project,
+    User
+};
 
 class ProjectsTest extends TestCase
 {
@@ -16,9 +19,12 @@ class ProjectsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $attributes = Project::factory()->raw();
+        $user = User::factory()->create(); 
+        $this->actingAs($user); 
 
-        $this->post('/projects', $attributes)->assertRedirect('/projects');
+        $attributes = Project::factory()->raw(['owner_id' => $user->id]); 
+
+        $this->post('/projects', array_merge($attributes));
 
         $this->assertDatabaseHas('projects', $attributes);
 
@@ -27,6 +33,8 @@ class ProjectsTest extends TestCase
 
     public function test_a_project_requires_a_title()
     {
+        $this->actingAs(User::factory()->create());
+
         $attributes = [
             'description' => $this->faker->paragraph,
         ];
@@ -36,6 +44,8 @@ class ProjectsTest extends TestCase
 
     public function test_a_project_requires_a_description()
     {
+        $this->actingAs(User::factory()->create());
+
         $attributes = [
             'title' => $this->faker->sentence,
         ];
@@ -63,9 +73,9 @@ class ProjectsTest extends TestCase
         $this->get('/projects')->assertSee('No projects in database');
     }
 
-    public function test_a_project_requies_an_owner() {
+    public function test_only_authenticated_users_can_create_projects() {
         $attributes = ProjectFactory::new()->raw(['owner_id' => null]);
 
-        $this->post('/projects', $attributes)->assertSessionHasErrors('owner_id');
+        $this->post('/projects', array_merge($attributes))->assertRedirect('login');
     }
 }
