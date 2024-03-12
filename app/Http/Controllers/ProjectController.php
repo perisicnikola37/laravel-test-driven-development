@@ -41,9 +41,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        if (Auth::id() !== $project->owner_id) {
-            abort(403, 'You are not authorized to view this project.');
-        };
+        $this->authorize('view', $project);
 
         return view('projects.show', compact('project'));
 
@@ -62,9 +60,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        if (Auth::id() !== $project->owner_id) {
-            abort(403, 'You are not authorized to update this project.');
-        };
+        $this->authorize('update', $project);
 
         $project->update(request()->validate(['title' => 'required', 'description' => 'required']));
 
@@ -76,12 +72,10 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        if (Auth::id() !== $project->owner_id) {
-            abort(403, 'You are not authorized to delete this project.');
-        };
+        $this->authorize('delete', $project);
 
         $project->delete();
 
-        return redirect('/projects');
+        return to_route('projects.index');
     }
 }
