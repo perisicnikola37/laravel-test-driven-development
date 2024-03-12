@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
@@ -33,7 +32,9 @@ class ProjectController extends Controller
      */
     public function store(ProjectStoreRequest $request)
     {
-        $project = Auth::user()->projects()->create(request()->validate(['title' => 'required', 'description' => 'required']));
+        $validatedData = $request->validated();
+
+        $project = Auth::user()->projects()->create($validatedData);
 
         return redirect($project->path());
     }
@@ -52,9 +53,9 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Project $project)
     {
-        //
+        return view('projects.edit', compact('project'));
     }
 
     /**
@@ -64,7 +65,7 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        $project->update(request()->validate(['title' => 'required', 'description' => 'required']));
+        $project->update($request->validated());
 
         return redirect($project->path());
     }

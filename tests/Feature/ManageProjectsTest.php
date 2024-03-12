@@ -18,6 +18,17 @@ class ManageProjectsTest extends TestCase
         $this->signIn();
     }
 
+    public function test_a_guests_cannot_manage_projects()
+    {
+        $project = Project::factory()->create();
+
+        $this->get('/projects')->assertRedirect('login');
+        $this->get('/projects/create')->assertRedirect('login');
+        $this->get('/projects/edit')->assertRedirect('login');
+        $this->get($project->path())->assertRedirect('login');
+        $this->post('/projects', $project->toArray())->assertRedirect('login');
+    }
+
     public function test_guests_cannot_create_projects()
     {
         $this->withoutExceptionHandling();
@@ -108,7 +119,6 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_user_can_update_a_project()
     {
-        $this->withoutExceptionHandling();
         $this->signInUser();
 
         $project = Project::factory()->create(['owner_id' => Auth::id()]);
@@ -123,7 +133,8 @@ class ManageProjectsTest extends TestCase
 
         $this->get($project->path())
             ->assertSee($newAttributes['title'])
-            ->assertSee($newAttributes['description']);
+            ->assertSee($newAttributes['description'])
+            ->assertOk();
     }
 
     public function test_a_user_can_delete_a_project()

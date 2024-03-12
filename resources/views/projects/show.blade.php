@@ -6,10 +6,10 @@
     <h1>
         <div class="flex items-center justify-between">
             @include('layouts.components.breadcrumb')
-            <a href="{{ route('projects.create') }}">
+            <a href="{{ route('projects.edit', $project) }}">
                 <button
                     class="bg-transparent mr-5 hover:bg-indigo-500 text-base text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded duration-300 mb-0">
-                    Add project
+                    Edit project
                 </button>
             </a>
         </div>
