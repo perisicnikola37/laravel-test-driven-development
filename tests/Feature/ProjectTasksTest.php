@@ -5,12 +5,18 @@ namespace Tests\Feature;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Tests\Helpers\TestEndpointHelper;
 use Tests\Helpers\TestSetupHelper;
 use Tests\TestCase;
 
 class ProjectTasksTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function signInUser(): void
+    {
+        $this->signIn();
+    }
 
     public function test_guests_cannot_add_tasks_to_projects()
     {
@@ -32,15 +38,13 @@ class ProjectTasksTest extends TestCase
     {
         $project = TestSetupHelper::setUpProjectWithTask($this);
 
-        $this->post($project->path() . '/tasks', ['body' => 'Test task']);
-
-        $this->get($project->path())
-            ->assertSee('Test task');
+        TestEndpointHelper::postTaskToProject($this, $project, 'Test task');
+        TestEndpointHelper::getTaskInProject($this, $project, 'Test task');
     }
 
     public function test_a_task_requires_a_body()
     {
-        $this->signIn();
+        $this->signInUser();
 
         $project = Auth::user()->projects()->create(
             Project::factory()->raw()
@@ -59,6 +63,7 @@ class ProjectTasksTest extends TestCase
             'body' => 'changed',
             'completed' => 1,
         ]);
+
         $this->assertDatabaseHas('tasks', [
             'body' => 'changed',
             'completed' => 1,
@@ -67,10 +72,8 @@ class ProjectTasksTest extends TestCase
 
     public function test_only_the_owner_of_a_project_may_update_a_task()
     {
-        $this->signIn();
-
+        $this->signInUser();
         $project = Project::factory()->create();
-
         $task = $project->addTask('Test task');
 
         $this->patch($project->path() . '/tasks/' . $task->id, [
