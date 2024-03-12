@@ -22,8 +22,8 @@ class ProjectStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'title' => 'required|string|min:3|max:255',
+            'description' => 'required|string|min:3|max:255',
         ];
     }
 }
