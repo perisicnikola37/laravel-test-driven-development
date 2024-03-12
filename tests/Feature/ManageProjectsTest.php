@@ -124,7 +124,7 @@ class ManageProjectsTest extends TestCase
         $project = Project::factory()->create(['owner_id' => Auth::id()]);
         $newAttributes = [
             'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph,
+            'description' => $this->faker->sentence(2),
         ];
 
         $this->patch($project->path(), $newAttributes);
