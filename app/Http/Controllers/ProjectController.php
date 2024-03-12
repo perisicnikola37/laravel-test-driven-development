@@ -13,11 +13,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-      $projects = Auth::user()->projects()->latest()->get();
+        $projects = Auth::user()->projects()->latest()->get();
 
         return view('projects.index', compact('projects'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -32,7 +31,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $project = Auth::user()->projects()->create(request()->validate(['title' => 'required','description' => 'required']));
+        $project = Auth::user()->projects()->create(request()->validate(['title' => 'required', 'description' => 'required']));
 
         return redirect($project->path());
     }
@@ -45,7 +44,7 @@ class ProjectController extends Controller
         if (Auth::id() !== $project->owner_id) {
             abort(403, 'You are not authorized to view this project.');
         };
-        
+
         return view('projects.show', compact('project'));
 
     }
@@ -61,16 +60,28 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Project $project)
     {
-        //
+        if (Auth::id() !== $project->owner_id) {
+            abort(403, 'You are not authorized to update this project.');
+        };
+
+        $project->update(request()->validate(['title' => 'required', 'description' => 'required']));
+
+        return redirect($project->path());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
-        //
+        if (Auth::id() !== $project->owner_id) {
+            abort(403, 'You are not authorized to delete this project.');
+        };
+
+        $project->delete();
+
+        return redirect('/projects');
     }
 }

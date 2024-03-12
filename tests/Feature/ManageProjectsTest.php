@@ -2,30 +2,32 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
+use App\Models\Project;
+use App\Models\User;
 use Database\Factories\ProjectFactory;
-use App\Models\ {
-    Project,
-    User
-};
+use Illuminate\Foundation\Testing\RefreshDatabase;use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Tests\TestCase;
 
 class ManageProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
+    private function signInUser(): void
+    {
+        $this->signIn();
+    }
+
     public function test_guests_cannot_create_projects()
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->create(); 
-        $this->actingAs($user); 
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
         $this->get('/projects/create')->assertStatus(200);
 
-        $attributes = Project::factory()->raw(['owner_id' => $user->id]); 
+        $attributes = Project::factory()->raw(['owner_id' => $user->id]);
 
         $this->post('/projects', array_merge($attributes));
 
@@ -36,7 +38,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_requires_a_title()
     {
-        $this->signIn();
+        $this->signInUser();
 
         $attributes = [
             'description' => $this->faker->paragraph,
@@ -47,7 +49,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_requires_a_description()
     {
-        $this->signIn();
+        $this->signInUser();
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -58,20 +60,20 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_user_can_view_their_project()
     {
-        $this->signIn();
-        
-        $project = ProjectFactory::new()->create(['owner_id' => Auth::id()]);
+        $this->signInUser();
+
+        $project = ProjectFactory::new ()->create(['owner_id' => Auth::id()]);
 
         $this->get($project->path())
-        ->assertSee($project->title)
-        ->assertSee($project->description);
+            ->assertSee($project->title)
+            ->assertSee($project->description);
     }
 
     public function test_an_authenticated_user_cannot_view_the_projects_of_others()
     {
-        $this->signIn();
-        
-        $project = ProjectFactory::new()->create();
+        $this->signInUser();
+
+        $project = ProjectFactory::new ()->create();
 
         $this->get($project->path())->assertSee(403);
     }
@@ -85,19 +87,53 @@ class ManageProjectsTest extends TestCase
         $this->get('/projects')->assertRedirect('login');
     }
 
-    public function test_only_authenticated_users_can_create_projects() {
-        $attributes = ProjectFactory::new()->raw(['owner_id' => null]);
+    public function test_only_authenticated_users_can_create_projects()
+    {
+        $attributes = ProjectFactory::new ()->raw(['owner_id' => null]);
 
         $this->post('/projects', array_merge($attributes))->assertRedirect('login');
     }
-    
-    public function test_guests_cannot_view_projects() {
+
+    public function test_guests_cannot_view_projects()
+    {
         $this->get('/projects')->assertRedirect('login');
     }
 
-    public function test_guests_cannot_view_a_single_project() {
-        $project = ProjectFactory::new()->create();
+    public function test_guests_cannot_view_a_single_project()
+    {
+        $project = ProjectFactory::new ()->create();
 
         $this->get($project->path())->assertRedirect('login');
+    }
+
+    public function test_a_user_can_update_a_project()
+    {
+        $this->withoutExceptionHandling();
+        $this->signInUser();
+
+        $project = Project::factory()->create(['owner_id' => Auth::id()]);
+        $newAttributes = [
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+        ];
+
+        $this->patch($project->path(), $newAttributes);
+
+        $this->assertDatabaseHas('projects', $newAttributes);
+
+        $this->get($project->path())
+            ->assertSee($newAttributes['title'])
+            ->assertSee($newAttributes['description']);
+    }
+
+    public function test_a_user_can_delete_a_project()
+    {
+        $this->signInUser();
+
+        $project = Project::factory()->create(['owner_id' => Auth::id()]);
+
+        $this->delete($project->path());
+
+        $this->assertDatabaseMissing('projects', $project->only('id'));
     }
 }
