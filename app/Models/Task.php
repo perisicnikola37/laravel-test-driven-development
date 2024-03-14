@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;use Illuminate\Database\Eloquent\Model;
+use App\Models\Activity;
+use App\Models\Project;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
@@ -10,6 +13,10 @@ class Task extends Model
 
     protected $guarded = [];
     protected $touches = ['project'];
+
+    protected $casts = [
+        'completed' => 'boolean',
+    ];
 
     public function project()
     {
@@ -21,12 +28,22 @@ class Task extends Model
         return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
 
-    protected function recordActivity($project, $type)
+    protected function recordActivity($type)
     {
         Activity::create([
-            'project_id' => $project->id,
+            'project_id' => $this->project->id,
             'description' => $type,
         ]);
+    }
+
+    public function complete()
+    {
+        $this->update(['completed' => true]);
+    }
+
+    public function incomplete()
+    {
+        $this->update(['completed' => false]);
     }
 
     public static function boot()
@@ -34,11 +51,11 @@ class Task extends Model
         parent::boot();
 
         self::created(function ($project) {
-            $project->recordActivity($project, 'Created');
+            $project->recordActivity('Created');
         });
 
         self::updated(function ($project) {
-            $project->recordActivity($project, 'Updated');
+            $project->recordActivity('Updated');
         });
     }
 }

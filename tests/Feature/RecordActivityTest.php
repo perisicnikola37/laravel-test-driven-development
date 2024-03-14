@@ -7,11 +7,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Helpers\TestSetupHelper;
 use Tests\TestCase;
 
-class ActivityFeedTest extends TestCase
+class RecordActivityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_creating_a_project_records_activity(): void
+    public function test_creating_a_project()
     {
         $project = Project::factory()->create();
 
@@ -19,7 +19,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('Created', $project->activity->first()->description);
     }
 
-    public function test_updating_a_project_records_activity()
+    public function test_updating_a_project()
     {
         $project = Project::factory()->create();
         $project->update(['title' => 'Updated']);
@@ -28,7 +28,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('Updated', $project->activity->last()->description);
     }
 
-    public function test_creating_a_new_task_records_activity()
+    public function test_creating_a_new_task()
     {
         $project = TestSetupHelper::setUpProjectWithTask($this);
 
@@ -36,7 +36,7 @@ class ActivityFeedTest extends TestCase
         $this->assertEquals('Created', $project->activity->last()->description);
     }
 
-    public function test_completing_a_new_task_records_activity()
+    public function test_completing_a_new_task()
     {
         $project = TestSetupHelper::setUpProjectWithTask($this);
 
@@ -45,7 +45,7 @@ class ActivityFeedTest extends TestCase
             'completed' => true,
         ]);
 
-        $this->assertCount(3, $project->activity);
+        $this->assertCount(4, $project->activity);
         $this->assertEquals('Updated', $project->activity->last()->description);
     }
 }

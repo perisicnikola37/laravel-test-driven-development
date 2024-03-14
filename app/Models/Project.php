@@ -18,12 +18,14 @@ class Project extends Model
         return "/projects/{$this->id}";
     }
 
-    protected function recordActivity($project, $type)
+    protected function recordActivity($description)
     {
-        Activity::create([
-            'project_id' => $project->id,
-            'description' => $type,
-        ]);
+        // old way
+        // Activity::create([
+        //     'project_id' => $this->id,
+        //     'description' => $description,
+        // ]);
+        $this->activity()->create(compact('description'));
     }
 
     public static function boot()
@@ -31,11 +33,11 @@ class Project extends Model
         parent::boot();
 
         self::created(function ($project) {
-            $project->recordActivity($project, 'Created');
+            $project->recordActivity('Created');
         });
 
         self::updated(function ($project) {
-            $project->recordActivity($project, 'Updated');
+            $project->recordActivity('Updated');
         });
     }
 
@@ -51,6 +53,6 @@ class Project extends Model
 
     public function activity()
     {
-        return $this->hasMany(Activity::class);
+        return $this->hasMany(Activity::class)->latest();
     }
 }

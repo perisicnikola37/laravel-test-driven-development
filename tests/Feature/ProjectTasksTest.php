@@ -86,4 +86,24 @@ class ProjectTasksTest extends TestCase
             'completed' => 1,
         ]);
     }
+
+    public function test_a_task_can_be_marked_as_incomplete()
+    {
+        $project = TestSetupHelper::setUpProjectWithTask($this);
+
+        $this->patch($project->path() . '/tasks/' . $project->tasks->first()->id, [
+            'body' => 'changed',
+            'completed' => 1,
+        ]);
+
+        $this->patch($project->path() . '/tasks/' . $project->tasks->first()->id, [
+            'body' => 'changed',
+            'completed' => 0,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'body' => 'changed',
+            'completed' => 0,
+        ]);
+    }
 }
