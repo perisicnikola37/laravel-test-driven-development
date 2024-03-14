@@ -51,11 +51,11 @@ class Task extends Model
         parent::boot();
 
         self::created(function ($project) {
-            $project->recordActivity('Created');
+            $project->recordActivity('created_task');
         });
 
         self::updated(function ($project) {
-            $project->recordActivity('Updated');
+            $project->recordActivity('updated_task');
         });
     }
 }

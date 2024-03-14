@@ -33,11 +33,11 @@ class Project extends Model
         parent::boot();
 
         self::created(function ($project) {
-            $project->recordActivity('Created');
+            $project->recordActivity('created_project');
         });
 
         self::updated(function ($project) {
-            $project->recordActivity('Updated');
+            $project->recordActivity('updated_project');
         });
     }
 
